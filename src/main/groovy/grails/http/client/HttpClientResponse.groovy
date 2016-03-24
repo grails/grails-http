@@ -3,6 +3,7 @@ package grails.http.client
 import grails.http.HttpStatus
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import groovy.util.slurpersupport.GPathResult
 import io.netty.buffer.ByteBufInputStream
 import io.netty.handler.codec.http.FullHttpResponse
 
@@ -37,6 +38,13 @@ class HttpClientResponse {
      */
     Object getJson() {
         new JsonSlurper().parse(getInputStream(), charset.toString())
+    }
+
+    /**
+     * @return An XML representation for the response body
+     */
+    GPathResult getXml() {
+        new XmlSlurper().parse(new InputStreamReader(getInputStream(), charset))
     }
 
     /**
@@ -87,14 +95,19 @@ class HttpClientResponse {
      * @return The status code of the response
      */
     int getStatusCode() {
-        response.status.code()
+        response.status().code()
     }
 
     /**
      * @return The returned http status object
      */
     HttpStatus getStatus() {
-        HttpStatus.valueOf(response.status.code())
+        HttpStatus.valueOf(response.status().code())
+    }
+
+    @Override
+    String toString() {
+        response.toString()
     }
 }
 

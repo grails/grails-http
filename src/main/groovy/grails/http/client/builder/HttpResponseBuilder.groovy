@@ -1,42 +1,36 @@
 package grails.http.client.builder
 
 import grails.http.HttpStatus
-import grails.http.client.HttpClientResponse
-import groovy.json.StreamingJsonBuilder
 import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
-import io.netty.buffer.ByteBuf
-import io.netty.buffer.ByteBufOutputStream
-import io.netty.handler.codec.http.HttpHeaders
+import io.netty.handler.codec.http.FullHttpResponse
 import io.netty.handler.codec.http.HttpResponseStatus
 
+import java.nio.charset.Charset
 /**
  * Builds HTTP responses
  *
  * @author Graeme Rocher
  * @since 1.0
  */
-@InheritConstructors
 @CompileStatic
-class HttpResponseBuilder extends HttpClientResponse {
+class HttpResponseBuilder extends HttpMessageBuilder<HttpResponseBuilder> {
 
-    /**
-     * The writer for the response
-     */
-    @Lazy Writer writer = {
-        ByteBuf buf = response.content()
-        buf = buf.retain()
-        def bufOutputStream = new ByteBufOutputStream(buf)
-        return new OutputStreamWriter(bufOutputStream, charset)
-    } ()
+
+    final FullHttpResponse response
+
+    HttpResponseBuilder(FullHttpResponse response, Charset charset) {
+        super(response, charset)
+        this.response = response
+    }
 
     /**
      * Sets an ok status
      *
      * @return This builder
      */
+
     HttpResponseBuilder ok() {
-        response.setStatus(HttpResponseStatus.OK)
+        this.response.setStatus(HttpResponseStatus.OK)
         return this
     }
 
@@ -46,7 +40,7 @@ class HttpResponseBuilder extends HttpClientResponse {
      * @return This builder
      */
     HttpResponseBuilder unauthorized() {
-        response.setStatus(HttpResponseStatus.UNAUTHORIZED)
+        this.response.setStatus(HttpResponseStatus.UNAUTHORIZED)
         return this
     }
 
@@ -56,7 +50,7 @@ class HttpResponseBuilder extends HttpClientResponse {
      * @return This builder
      */
     HttpResponseBuilder forbidden() {
-        response.setStatus(HttpResponseStatus.FORBIDDEN)
+        this.response.setStatus(HttpResponseStatus.FORBIDDEN)
         return this
     }
 
@@ -66,7 +60,7 @@ class HttpResponseBuilder extends HttpClientResponse {
      * @return The created status
      */
     HttpResponseBuilder created() {
-        response.setStatus(HttpResponseStatus.CREATED)
+        this.response.setStatus(HttpResponseStatus.CREATED)
         return this
     }
 
@@ -77,7 +71,7 @@ class HttpResponseBuilder extends HttpClientResponse {
      * @return The not found status
      */
     HttpResponseBuilder notFound() {
-        response.setStatus(HttpResponseStatus.NOT_FOUND)
+        this.response.setStatus(HttpResponseStatus.NOT_FOUND)
         return this
     }
 
@@ -88,7 +82,7 @@ class HttpResponseBuilder extends HttpClientResponse {
      * @return This builder
      */
     HttpResponseBuilder status(int code) {
-        response.setStatus(HttpResponseStatus.valueOf(code))
+        this.response.setStatus(HttpResponseStatus.valueOf(code))
         return this
     }
 
@@ -99,41 +93,7 @@ class HttpResponseBuilder extends HttpClientResponse {
      * @return This builder
      */
     HttpResponseBuilder status(HttpStatus status) {
-        response.setStatus(HttpResponseStatus.valueOf(status.code))
+        this.response.setStatus(HttpResponseStatus.valueOf(status.code))
         return this
-    }
-
-    /**
-     * Builds a json body
-     *
-     * @param callable The closure representing the JSON
-     * @return The builder
-     */
-    HttpResponseBuilder json(@DelegatesTo(StreamingJsonBuilder) Closure callable) {
-        def builder = prepareJsonBuilder()
-        builder.call callable
-        writer.flush()
-        return this
-    }
-
-    /**
-     * Adds JSON to the body of the request
-     * @param array The JSON array
-     * @return This request
-     */
-    HttpResponseBuilder json(List array) {
-        StreamingJsonBuilder builder = prepareJsonBuilder()
-        builder.call(array)
-        writer.flush()
-        return this
-    }
-
-    protected StreamingJsonBuilder prepareJsonBuilder() {
-        def headers = response.headers()
-        if (!headers.contains(HttpHeaders.Names.CONTENT_TYPE)) {
-            headers.add(HttpHeaders.Names.CONTENT_TYPE, "application/json")
-        }
-        StreamingJsonBuilder builder = new StreamingJsonBuilder(writer)
-        builder
     }
 }

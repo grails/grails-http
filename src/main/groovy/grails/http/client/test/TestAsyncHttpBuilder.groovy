@@ -134,12 +134,20 @@ class TestAsyncHttpBuilder extends AsyncHttpBuilder {
                 assert false : "Found none request object among outbound messages"
             }
         }
+        outboundMessages.clear()
         return true
     }
 
     protected void verifyRequest(DefaultFullHttpRequest expected, FullHttpRequest actual) {
-        assert expected.uri == actual.uri : "Expected URI [$expected.uri] does not match actual URI [$actual.uri]"
-        assert expected.method == actual.method : "Expected method [$expected.method] does not match actual method [$actual.method]"
+        def expectedUri = expected.uri()
+        def actualUri = actual.uri()
+
+        assert expectedUri == actualUri: "Expected URI [$expectedUri] does not match actual URI [$actualUri]"
+
+        def expectedMethod = expected.method()
+        def actualMethod = actual.method()
+
+        assert expectedMethod == actualMethod: "Expected method [$expectedMethod] does not match actual method [$actualMethod]"
         def expectedHeaders = expected.headers()
         def actualHeaders = actual.headers()
         for (header in expectedHeaders) {
@@ -173,7 +181,7 @@ class TestAsyncHttpBuilder extends AsyncHttpBuilder {
 
         TestAsyncHttpBuilder respond(@DelegatesTo(HttpResponseBuilder) Closure callable) {
             def res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK)
-            callable.delegate = new HttpResponseBuilder(res)
+            callable.delegate = new HttpResponseBuilder(res, parent.charset)
             callable.call()
             parent.expectedResponses.add(res)
             return parent

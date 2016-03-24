@@ -1,6 +1,7 @@
 package grails.http.client
 
 import grails.async.Promise
+import grails.http.HttpMethod
 import grails.http.HttpStatus
 import grails.http.client.test.TestAsyncHttpBuilder
 import io.netty.handler.codec.http.HttpResponseStatus
@@ -10,8 +11,7 @@ import spock.lang.Specification
  */
 class AsyncRestBuilderSpec extends Specification {
 
-
-    void 'Test simple GET request'() {
+    void 'Test simple GET request with JSON response'() {
         given:"an http client instance"
         AsyncHttpBuilder client = new TestAsyncHttpBuilder()
         client.expect {
@@ -44,7 +44,7 @@ class AsyncRestBuilderSpec extends Specification {
         response.json.title == "Hello"
     }
 
-    void 'Test simple POST request'() {
+    void 'Test simple POST request with JSON body and JSON response'() {
         given:"an http client instance"
         TestAsyncHttpBuilder client = new TestAsyncHttpBuilder()
         client.expect {
@@ -81,5 +81,43 @@ class AsyncRestBuilderSpec extends Specification {
         response.header("Content-Type") == 'application/json'
         response.text != ''
         response.json.title == "Pong"
+    }
+
+    void 'Test simple POST request with XML body and XMLresponse'() {
+        given:"an http client instance"
+        TestAsyncHttpBuilder client = new TestAsyncHttpBuilder()
+        client.expect {
+            uri '/foo/bar'
+            method HttpMethod.POST
+            contentType 'application/xml'
+            xml {
+                title "Ping"
+            }
+        }.respond {
+            created()
+            xml {
+                title "Pong"
+            }
+        }
+
+        when:
+        Promise<HttpClientResponse> p = client.post("https://localhost:8080/foo/bar") {
+            xml {
+                title "Ping"
+            }
+        }
+
+        then:
+        client.verify()
+
+
+        when:
+        final def response = p.get()
+
+        then:
+        response.status == HttpStatus.CREATED
+        response.header("Content-Type") == 'application/xml'
+        response.text != ''
+        response.xml.text() == "Pong"
     }
 }

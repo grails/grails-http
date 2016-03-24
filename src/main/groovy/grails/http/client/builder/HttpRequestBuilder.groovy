@@ -1,15 +1,11 @@
 package grails.http.client.builder
 
 import grails.http.HttpMethod
-import groovy.json.StreamingJsonBuilder
 import groovy.transform.CompileStatic
-import io.netty.buffer.ByteBuf
-import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.http.DefaultFullHttpRequest
-import io.netty.handler.codec.http.HttpHeaders
+import io.netty.handler.codec.http.HttpHeaderNames
 
 import java.nio.charset.Charset
-
 /**
  * Represents the HTTP request to be customized
  *
@@ -17,28 +13,17 @@ import java.nio.charset.Charset
  * @since 1.0
  */
 @CompileStatic
-class HttpRequestBuilder {
+class HttpRequestBuilder extends HttpMessageBuilder<HttpRequestBuilder>{
 
     final DefaultFullHttpRequest request
-    final Charset charset
-    /**
-     * The writer for the request body
-     */
-    @Lazy Writer writer = {
-        ByteBuf buf = request.content()
-        buf = buf.retain()
-        def bufOutputStream = new ByteBufOutputStream(buf)
-        return new OutputStreamWriter(bufOutputStream, charset)
-    } ()
-
 
     HttpRequestBuilder(final DefaultFullHttpRequest request, String encoding) {
         this(request, Charset.forName(encoding))
     }
 
     HttpRequestBuilder(final DefaultFullHttpRequest request, Charset charset) {
+        super(request, charset)
         this.request = request
-        this.charset = charset
     }
 
     /**
@@ -87,7 +72,7 @@ class HttpRequestBuilder {
     HttpRequestBuilder auth(String username, String password) {
         String usernameAndPassword = "$username:$password"
         String encoded = new String(Base64.getEncoder().encode(usernameAndPassword.bytes))
-        header HttpHeaders.Names.AUTHORIZATION, "Basic $encoded".toString()
+        header HttpHeaderNames.AUTHORIZATION, "Basic $encoded".toString()
         return this
     }
 
@@ -105,7 +90,7 @@ class HttpRequestBuilder {
      * @return The customizer
      */
     HttpRequestBuilder accept(CharSequence... contentTypes) {
-        header HttpHeaders.Names.ACCEPT, contentTypes.join(',')
+        header HttpHeaderNames.ACCEPT, contentTypes.join(',')
         return this
     }
 
@@ -122,76 +107,7 @@ class HttpRequestBuilder {
      * @return The customizer
      */
     HttpRequestBuilder auth(CharSequence accessToken) {
-        header HttpHeaders.Names.AUTHORIZATION, accessToken
+        header HttpHeaderNames.AUTHORIZATION, accessToken
         return this
     }
-
-    /**
-     * Sets the content type for the request
-     *
-     * @param contentType The content type
-     */
-    HttpRequestBuilder contentType(CharSequence contentType) {
-        request.headers().add(HttpHeaders.Names.CONTENT_TYPE, contentType)
-        return this
-    }
-
-    /**
-     * Sets a request header
-     *
-     * @param name The name of the header
-     * @param value The value of the header
-     * @return This request
-     */
-    HttpRequestBuilder header(String name, value) {
-        request.headers().add(name, value)
-        return this
-    }
-
-    /**
-     * Adds JSON to the body of the request
-     * @param callable The callable that defines the JSON
-     * @return
-     */
-    HttpRequestBuilder json(@DelegatesTo(StreamingJsonBuilder) Closure callable) {
-        StreamingJsonBuilder builder = prepareJsonBuilder()
-        builder.call(callable)
-        writer.flush()
-        return this
-    }
-
-    /**
-     * Adds JSON to the body of the request
-     * @param array The JSON array
-     * @return This request
-     */
-    HttpRequestBuilder json(List array) {
-        StreamingJsonBuilder builder = prepareJsonBuilder()
-        builder.call(array)
-        writer.flush()
-        return this
-    }
-
-    /**
-     * Adds JSON to the body of the request
-     * @param json The JSON as a map
-     * @return This request
-     */
-    HttpRequestBuilder json(Map json) {
-        StreamingJsonBuilder builder = prepareJsonBuilder()
-        builder.call(json)
-        writer.flush()
-        return this
-    }
-
-    protected StreamingJsonBuilder prepareJsonBuilder() {
-        def headers = request.headers()
-        if (!headers.contains(HttpHeaders.Names.CONTENT_TYPE)) {
-            headers.add(HttpHeaders.Names.CONTENT_TYPE, "application/json")
-        }
-        StreamingJsonBuilder builder = new StreamingJsonBuilder(writer)
-        builder
-    }
-
-
 }
