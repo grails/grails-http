@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import java.util.stream.IntStream
 
 /**
- * Constants for HTTP headers
+ * Enum for common HTTP headers
  *
  * @author Graeme Rocher
  * @since 1.0

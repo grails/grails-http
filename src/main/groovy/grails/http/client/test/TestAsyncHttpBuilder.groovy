@@ -52,8 +52,8 @@ import io.netty.handler.codec.http.*
 class TestAsyncHttpBuilder extends AsyncHttpBuilder {
 
     final EmbeddedChannel mockChannel
-    final LinkedList<DefaultFullHttpRequest> expectedRequests = []
-    final LinkedList<DefaultFullHttpResponse> expectedResponses = []
+    final LinkedList<HttpRequest> expectedRequests = []
+    final LinkedList<HttpResponse> expectedResponses = []
 
     TestAsyncHttpBuilder(Configuration configuration = new DefaultConfiguration(codec: (HttpClientCodec)null)) {
         super(configuration)
@@ -94,7 +94,9 @@ class TestAsyncHttpBuilder extends AsyncHttpBuilder {
         HttpRequestBuilder requestBuilder = new HttpRequestBuilder(req, charset)
         expectedRequest.delegate = requestBuilder
         expectedRequest.call()
-        expectedRequests.add(req)
+
+
+        expectedRequests.add(requestBuilder.wrapped ?: req)
 
         return new MockResponseBuilder(this)
     }
@@ -123,22 +125,22 @@ class TestAsyncHttpBuilder extends AsyncHttpBuilder {
         }
         int i = 0
         for(object in outboundMessages) {
-            if(object instanceof DefaultFullHttpRequest) {
+            if(object instanceof HttpRequest) {
 
-                FullHttpRequest expectedRequest = expectedRequests.get(i++)
-                FullHttpRequest actualRequest = (FullHttpRequest)object
+                HttpRequest expectedRequest = expectedRequests.get(i++)
+                HttpRequest actualRequest = (HttpRequest)object
 
                 verifyRequest(expectedRequest, actualRequest)
             }
             else {
-                assert false : "Found none request object among outbound messages"
+                assert false : "Found non-request object among outbound messages"
             }
         }
         outboundMessages.clear()
         return true
     }
 
-    protected void verifyRequest(DefaultFullHttpRequest expected, FullHttpRequest actual) {
+    protected void verifyRequest(HttpRequest expected, HttpRequest actual) {
         def expectedUri = expected.uri()
         def actualUri = actual.uri()
 
@@ -155,19 +157,26 @@ class TestAsyncHttpBuilder extends AsyncHttpBuilder {
             def headerName = header.key
             def expectedHeaderValue = header.value
             def actualHeaderValue = actualHeaders.get(headerName)
-
-            assert "$headerName: $expectedHeaderValue" == "$headerName: $actualHeaderValue"
+            if(expectedHeaderValue.startsWith('multipart/')) {
+                // need to ignore the changeable boundary definition
+                assert actualHeaderValue.startsWith("multipart/") : "expected a multipart request"
+            }
+            else {
+                assert "$headerName: $expectedHeaderValue" == "$headerName: $actualHeaderValue"
+            }
         }
 
+        if((expected instanceof FullHttpRequest) && (actual instanceof FullHttpRequest)) {
+            def expectedBody = expected.content()
+            def actualBody = actual.content()
+            if( expectedBody.hasArray() && !actualBody.hasArray() ) {
+                assert false : "Expected content ${expectedBody.toString(charset)} but got none"
+            }
+            else {
+                assert expectedBody.toString(charset) == actualBody.toString(charset)
+            }
+        }
 
-        def expectedBody = expected.content()
-        def actualBody = actual.content()
-        if( expectedBody.hasArray() && !actualBody.hasArray() ) {
-            assert false : "Expected content ${expectedBody.toString(charset)} but got none"
-        }
-        else {
-            assert expectedBody.toString(charset) == actualBody.toString(charset)
-        }
     }
     /**
      * Allows construction of a mock response

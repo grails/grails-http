@@ -253,7 +253,7 @@ class AsyncHttpBuilder {
                     def reqCustomizer = new HttpRequestBuilder(req, Charset.forName(configuration.encoding))
                     customizer.delegate = reqCustomizer
                     customizer.call()
-                    req = reqCustomizer.request
+                    req = reqCustomizer.wrapped ?: req
                 }
 
                 def headers = req.headers()
@@ -280,7 +280,7 @@ class AsyncHttpBuilder {
             }
         }
 
-        protected ChannelFuture writeHttpRequest(Channel connectionChannel, FullHttpRequest req) {
+        protected ChannelFuture writeHttpRequest(Channel connectionChannel, HttpRequest req) {
             connectionChannel
                     .writeAndFlush(req)
         }

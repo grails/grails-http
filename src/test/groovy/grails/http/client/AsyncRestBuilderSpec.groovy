@@ -13,6 +13,36 @@ import spock.lang.Specification
  */
 class AsyncRestBuilderSpec extends Specification {
 
+    void "Test multipart form submission"() {
+        given:"A client"
+        AsyncHttpBuilder client = new TestAsyncHttpBuilder()
+
+        client.expect {
+            uri('/foo/bar')
+            method(HttpMethod.POST)
+            multipart {
+                foo = 'bar'
+                file('myFile', 'test.txt', 'Hello world!')
+            }
+        }.respond {
+            ok()
+        }
+
+        when:"A form is submitted"
+        Promise<HttpClientResponse> p = client.post("http://localhost:8080/foo/bar") {
+            multipart {
+                foo = "bar"
+            }
+        }
+
+        def response = p.get()
+
+        then:"The form was submitted correct"
+        client.verify()
+        response.status == HttpStatus.OK
+    }
+
+
     void "Test form submission"() {
         given:"A client"
         AsyncHttpBuilder client = new TestAsyncHttpBuilder()
