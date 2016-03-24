@@ -5,7 +5,8 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Untitled</title>
+<meta name="author" content="Graeme Rocher">
+<title>Grails HTTP</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -417,15 +418,127 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .show-for-print{display:inherit!important}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
+<h1>Grails HTTP</h1>
+<div class="details">
+<span id="author" class="author">Graeme Rocher</span><br>
+<span id="email" class="email"><a href="mailto:graeme.rocher@gmail.com">graeme.rocher@gmail.com</a></span><br>
+</div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_http_client">2. HTTP Client</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction_2">2.1. Introduction</a></li>
+<li><a href="#_sending_receiving_json">2.2. Sending &amp; Receiving JSON</a></li>
+<li><a href="#_sending_receiving_xml">2.3. Sending &amp; Receiving XML</a></li>
+<li><a href="#_forms_and_multipart_requests">2.4. Forms and Multipart Requests</a></li>
+<li><a href="#_testing">2.5. Testing</a></li>
+<li><a href="#_configuration">2.6. Configuration</a></li>
+<li><a href="#_usage_within_grails">2.7. Usage within Grails</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
 </div>
@@ -434,6 +547,285 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="paragraph">
 <p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_http_client">2. HTTP Client</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_introduction_2">2.1. Introduction</h3>
+<div class="paragraph">
+<p>The HTTP client is built on the <a href="http://netty.io">Netty toolkit</a> and is designed as a non-blocking replacement for the <a href="https://grails.org/plugin/rest-client-builder">REST Client Builder plugin </a> for Grails.</p>
+</div>
+<div class="paragraph">
+<p>To get started with the HTTP client you should declare a dependency on the <code>grails-http</code> project in your <code>build.gradle</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails:grails-http:VERSION</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The entry point for the API is the <a href="groovydoc/grails/http/client/AsyncHttpBuilder.html">AsyncRestBuilder</a> class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Typically there should be a single instance of this class ( a Spring bean for example) that you reuse to avoid the cost of repeatedly creating the thread pools that Netty requires to operate.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The most simple use case for obtaining content can be seen below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">grails.http.client.*</span>
+<span class="keyword">import</span> <span class="include">grails.async.*</span>
+...
+AsyncHttpBuilder client = <span class="keyword">new</span> AsyncHttpBuilder()
+Promise&lt;HttpClientResponse&gt; p = client.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+    contentType <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+    json {
+        title <span class="string"><span class="delimiter">&quot;</span><span class="content">Ping</span><span class="delimiter">&quot;</span></span>
+    }
+}
+p.onComplete { HttpClientResponse resp -&gt;
+    <span class="keyword">assert</span> resp.json.title == <span class="string"><span class="delimiter">'</span><span class="content">Pong</span><span class="delimiter">'</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>AsyncHttpBuilder</code> has methods for each HTTP method type (<code>GET</code>, <code>POST</code>, <code>PUT</code> etc.), each one returning a <a href="http://grails.github.io/grails-doc/latest/api/grails/async/Promise.html">Promise</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can attach completion or error listeners to the <code>Promise</code> instance. For more information on promises see <a href="http://grails.github.io/grails-doc/latest/guide/async.html#promises">the guide</a> in the Grails documentation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sending_receiving_json">2.2. Sending &amp; Receiving JSON</h3>
+<div class="paragraph">
+<p>To send JSON you can use the <code>json</code> method which uses an instance of Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+    contentType <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+    json {
+        title <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello World</span><span class="delimiter">&quot;</span></span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>json</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> which allows you to build JSON with <code>StreamingJsonBuilder</code> in a variety of ways:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">json [<span class="integer">1</span>,<span class="integer">2</span>,<span class="integer">3</span>] <span class="comment">// a JSON array</span>
+json <span class="key">title</span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">Hello World</span><span class="delimiter">&quot;</span></span> <span class="comment">// a map</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To read a JSON response use the <code>json</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">p.onComplete { HttpClientResponse resp -&gt;
+    <span class="keyword">assert</span> resp.json.title == <span class="string"><span class="delimiter">'</span><span class="content">Pong</span><span class="delimiter">'</span></span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sending_receiving_xml">2.3. Sending &amp; Receiving XML</h3>
+<div class="paragraph">
+<p>To send XML you can use the <code>xml</code> method which uses an instance of Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/xml/StreamingMarkupBuilder.html">StreamingMarkupBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+    xml {
+        message {
+            title <span class="string"><span class="delimiter">&quot;</span><span class="content">Ping</span><span class="delimiter">&quot;</span></span>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>xml</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> class.</p>
+</div>
+<div class="paragraph">
+<p>To read an XML response use the <code>xml</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>, which returns a Groovy <a href="http://docs.groovy-lang.org/latest/html/api/groovy/util/slurpersupport/GPathResult.html">GPathResult</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">p.onComplete { HttpClientResponse resp -&gt;
+    <span class="keyword">assert</span> resp.xml.message.text() == <span class="string"><span class="delimiter">'</span><span class="content">Pong</span><span class="delimiter">'</span></span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_forms_and_multipart_requests">2.4. Forms and Multipart Requests</h3>
+<div class="paragraph">
+<p>To send a request of type <code>application/x-www-form-urlencoded</code> use the <code>form</code> method defined by <a href="groovydoc/grails/http/client/builder/HttpRequestBuilder.html">HttpRequestBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+    form {
+        foo = <span class="string"><span class="delimiter">&quot;</span><span class="content">bar</span><span class="delimiter">&quot;</span></span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To upload files using a multipart request use the <code>multipart</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">client.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+    multipart {
+        foo = <span class="string"><span class="delimiter">&quot;</span><span class="content">bar</span><span class="delimiter">&quot;</span></span>
+        myFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(..)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can either assign a <code>File</code>, an <code>InputStream</code> or a <code>byte[]</code> for files to be uploaded. Alternatively you can use the <code>file</code> method of <code>HttpRequestBuilder</code> to further customize the file upload.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_testing">2.5. Testing</h3>
+<div class="paragraph">
+<p>To facilitate testing and mocking you can use the <a href="groovydoc/grails/http/client/test/TestAsyncHttpBuilder.html">TestAsyncHttpBuilder</a> class.</p>
+</div>
+<div class="paragraph">
+<p>The <code>TestAsyncHttpBuilder</code> provides the ability to mock HTTP responses and avoid external HTTP requests within your unit tests.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">TestAsyncHttpBuilder client = <span class="keyword">new</span> TestAsyncHttpBuilder()
+client.expect {
+    uri <span class="string"><span class="delimiter">'</span><span class="content">/foo/bar</span><span class="delimiter">'</span></span>
+    method <span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>
+    accept <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+}.respond {
+    ok()
+    json {
+        title <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello</span><span class="delimiter">&quot;</span></span>
+    }
+}
+...
+Promise&lt;HttpClientResponse&gt; p = client.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+    accept <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+}
+HttpClientResponse response = p.get()
+...
+assert client.verify()
+<span class="keyword">assert</span> response.status == HttpStatus.OK
+<span class="keyword">assert</span> response.json.title == <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">2.6. Configuration</h3>
+<div class="paragraph">
+<p>The client can be configured with the <a href="groovydoc/grails/http/client/Configuration.html">Configuration</a> trait and the <a href="groovydoc/grails/http/client/cfg/DefaultConfiguration.html">DefaultConfiguration</a> implementation class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Typically for production deployments that use HTTPS you will need to configure the <code>sslTrustManagerFactory</code> using your own certificate.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>proxy</code> property of the <code>Configuration</code> trait allows you to configure an HTTP or SOCKS proxy.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For proxy authentication set the <code>http.proxyUser</code> and <code>http.proxyPassword</code> system properties (or the equivalents for SOCKS)
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage_within_grails">2.7. Usage within Grails</h3>
+<div class="paragraph">
+<p>Within Grails 3 you typically want to configure the client as a Spring bean within your <code>Application</code> class' <code>doWithSpring</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">grails.http.client.*</span>
+...
+<span class="annotation">@Override</span>
+Closure doWithSpring() {{-&gt;
+    httpBuilder(AsyncHttpBuilder)
+}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to alter the configuration you can do so with the <code>DefaultConfiguration</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">grails.http.client.*</span>
+...
+<span class="annotation">@Override</span>
+Closure doWithSpring() {{-&gt;
+    <span class="keyword">def</span> config = <span class="keyword">new</span> DefaultConfiguration(<span class="key">proxy</span>:..)
+    httpBuilder(AsyncHttpBuilder, config)
+}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then within a controller you can easily obtain a reference and use Grails' asynchronous request processing to perform HTTP calls to an external web service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">grails.http.client.*</span>
+<span class="keyword">import</span> <span class="include">grails.async.*</span>
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">grails.async.Promises.*</span>
+...
+<span class="annotation">@Autowired</span>
+AsyncHttpBuilder client
+...
+def myAction() {
+    Promise&lt;<span class="predefined-type">String</span>&gt; promise = client.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://localhost:8080/foo/bar</span><span class="delimiter">&quot;</span></span>) {
+        accept <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+    }.then { HttpClientResponse res -&gt;
+        <span class="keyword">return</span> res.json.title
+    }
+    tasks <span class="key">title</span>: promise
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">

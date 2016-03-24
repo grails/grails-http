@@ -427,13 +427,36 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>To send JSON you can use the <code>json</code> method which uses an instance of Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post("https://localhost:8080/foo/bar") {
+    contentType 'application/json'
+    json {
+        title "Hello World"
+    }
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>The <code>json</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> which allows you to build JSON with <code>StreamingJsonBuilder</code> in a variety of ways:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json [1,2,3] // a JSON array
+json title:"Hello World" // a map</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<p>To read a JSON response use the <code>json</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">p.onComplete { HttpClientResponse resp -&gt;
+    assert resp.json.title == 'Pong'
+}</code></pre>
+</div>
 </div>
 </div>
 <div id="footer">

@@ -427,13 +427,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>To send a request of type <code>application/x-www-form-urlencoded</code> use the <code>form</code> method defined by <a href="groovydoc/grails/http/client/builder/HttpRequestBuilder.html">HttpRequestBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post("http://localhost:8080/foo/bar") {
+    form {
+        foo = "bar"
+    }
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>To upload files using a multipart request use the <code>multipart</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">client.post("http://localhost:8080/foo/bar") {
+    multipart {
+        foo = "bar"
+        myFile = new File(..)
+    }
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<p>You can either assign a <code>File</code>, an <code>InputStream</code> or a <code>byte[]</code> for files to be uploaded. Alternatively you can use the <code>file</code> method of <code>HttpRequestBuilder</code> to further customize the file upload.</p>
 </div>
 </div>
 <div id="footer">

@@ -427,13 +427,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>The client can be configured with the <a href="groovydoc/grails/http/client/Configuration.html">Configuration</a> trait and the <a href="groovydoc/grails/http/client/cfg/DefaultConfiguration.html">DefaultConfiguration</a> implementation class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Typically for production deployments that use HTTPS you will need to configure the <code>sslTrustManagerFactory</code> using your own certificate.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>The <code>proxy</code> property of the <code>Configuration</code> trait allows you to configure an HTTP or SOCKS proxy.</p>
 </div>
-<div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For proxy authentication set the <code>http.proxyUser</code> and <code>http.proxyPassword</code> system properties (or the equivalents for SOCKS)
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div id="footer">

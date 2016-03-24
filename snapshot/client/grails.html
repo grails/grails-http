@@ -427,13 +427,53 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>Within Grails 3 you typically want to configure the client as a Spring bean within your <code>Application</code> class' <code>doWithSpring</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+...
+@Override
+Closure doWithSpring() {{-&gt;
+    httpBuilder(AsyncHttpBuilder)
+}}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>If you need to alter the configuration you can do so with the <code>DefaultConfiguration</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+...
+@Override
+Closure doWithSpring() {{-&gt;
+    def config = new DefaultConfiguration(proxy:..)
+    httpBuilder(AsyncHttpBuilder, config)
+}}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<p>Then within a controller you can easily obtain a reference and use Grails' asynchronous request processing to perform HTTP calls to an external web service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+import grails.async.*
+import static grails.async.Promises.*
+...
+@Autowired
+AsyncHttpBuilder client
+...
+def myAction() {
+    Promise&lt;String&gt; promise = client.get("https://localhost:8080/foo/bar") {
+        accept 'application/json'
+    }.then { HttpClientResponse res -&gt;
+        return res.json.title
+    }
+    tasks title: promise
+}</code></pre>
+</div>
 </div>
 </div>
 <div id="footer">

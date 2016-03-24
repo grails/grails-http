@@ -427,13 +427,56 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>The HTTP client is built on the <a href="http://netty.io">Netty toolkit</a> and is designed as a non-blocking replacement for the <a href="https://grails.org/plugin/rest-client-builder">REST Client Builder plugin </a> for Grails.</p>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>To get started with the HTTP client you should declare a dependency on the <code>grails-http</code> project in your <code>build.gradle</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails:grails-http:VERSION"</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<p>The entry point for the API is the <a href="groovydoc/grails/http/client/AsyncHttpBuilder.html">AsyncRestBuilder</a> class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Typically there should be a single instance of this class ( a Spring bean for example) that you reuse to avoid the cost of repeatedly creating the thread pools that Netty requires to operate.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The most simple use case for obtaining content can be seen below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+import grails.async.*
+...
+AsyncHttpBuilder client = new AsyncHttpBuilder()
+Promise&lt;HttpClientResponse&gt; p = client.post("https://localhost:8080/foo/bar") {
+    contentType 'application/json'
+    json {
+        title "Ping"
+    }
+}
+p.onComplete { HttpClientResponse resp -&gt;
+    assert resp.json.title == 'Pong'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>AsyncHttpBuilder</code> has methods for each HTTP method type (<code>GET</code>, <code>POST</code>, <code>PUT</code> etc.), each one returning a <a href="http://grails.github.io/grails-doc/latest/api/grails/async/Promise.html">Promise</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can attach completion or error listeners to the <code>Promise</code> instance. For more information on promises see <a href="http://grails.github.io/grails-doc/latest/guide/async.html#promises">the guide</a> in the Grails documentation.</p>
 </div>
 </div>
 <div id="footer">

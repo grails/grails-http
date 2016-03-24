@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Untitled</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -422,18 +422,289 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-
+<ul class="sectlevel2">
+<li><a href="#_introduction">Introduction</a></li>
+<li><a href="#_sending_receiving_json">Sending &amp; Receiving JSON</a></li>
+<li><a href="#_sending_receiving_xml">Sending &amp; Receiving XML</a></li>
+<li><a href="#_forms_and_multipart_requests">Forms and Multipart Requests</a></li>
+<li><a href="#_testing">Testing</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_usage_within_grails">Usage within Grails</a></li>
+</ul>
 </div>
 </div>
 <div id="content">
+<div class="sect2">
+<h3 id="_introduction">Introduction</h3>
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>The HTTP client is built on the <a href="http://netty.io">Netty toolkit</a> and is designed as a non-blocking replacement for the <a href="https://grails.org/plugin/rest-client-builder">REST Client Builder plugin </a> for Grails.</p>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>To get started with the HTTP client you should declare a dependency on the <code>grails-http</code> project in your <code>build.gradle</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile "org.grails:grails-http:VERSION"</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<p>The entry point for the API is the <a href="groovydoc/grails/http/client/AsyncHttpBuilder.html">AsyncRestBuilder</a> class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Typically there should be a single instance of this class ( a Spring bean for example) that you reuse to avoid the cost of repeatedly creating the thread pools that Netty requires to operate.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The most simple use case for obtaining content can be seen below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+import grails.async.*
+...
+AsyncHttpBuilder client = new AsyncHttpBuilder()
+Promise&lt;HttpClientResponse&gt; p = client.post("https://localhost:8080/foo/bar") {
+    contentType 'application/json'
+    json {
+        title "Ping"
+    }
+}
+p.onComplete { HttpClientResponse resp -&gt;
+    assert resp.json.title == 'Pong'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>AsyncHttpBuilder</code> has methods for each HTTP method type (<code>GET</code>, <code>POST</code>, <code>PUT</code> etc.), each one returning a <a href="http://grails.github.io/grails-doc/latest/api/grails/async/Promise.html">Promise</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can attach completion or error listeners to the <code>Promise</code> instance. For more information on promises see <a href="http://grails.github.io/grails-doc/latest/guide/async.html#promises">the guide</a> in the Grails documentation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sending_receiving_json">Sending &amp; Receiving JSON</h3>
+<div class="paragraph">
+<p>To send JSON you can use the <code>json</code> method which uses an instance of Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html">StreamingJsonBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post("https://localhost:8080/foo/bar") {
+    contentType 'application/json'
+    json {
+        title "Hello World"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>json</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> which allows you to build JSON with <code>StreamingJsonBuilder</code> in a variety of ways:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">json [1,2,3] // a JSON array
+json title:"Hello World" // a map</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To read a JSON response use the <code>json</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">p.onComplete { HttpClientResponse resp -&gt;
+    assert resp.json.title == 'Pong'
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sending_receiving_xml">Sending &amp; Receiving XML</h3>
+<div class="paragraph">
+<p>To send XML you can use the <code>xml</code> method which uses an instance of Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/xml/StreamingMarkupBuilder.html">StreamingMarkupBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post("https://localhost:8080/foo/bar") {
+    xml {
+        message {
+            title "Ping"
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>xml</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> class.</p>
+</div>
+<div class="paragraph">
+<p>To read an XML response use the <code>xml</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>, which returns a Groovy <a href="http://docs.groovy-lang.org/latest/html/api/groovy/util/slurpersupport/GPathResult.html">GPathResult</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">p.onComplete { HttpClientResponse resp -&gt;
+    assert resp.xml.message.text() == 'Pong'
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_forms_and_multipart_requests">Forms and Multipart Requests</h3>
+<div class="paragraph">
+<p>To send a request of type <code>application/x-www-form-urlencoded</code> use the <code>form</code> method defined by <a href="groovydoc/grails/http/client/builder/HttpRequestBuilder.html">HttpRequestBuilder</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Promise&lt;HttpClientResponse&gt; p = client.post("http://localhost:8080/foo/bar") {
+    form {
+        foo = "bar"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To upload files using a multipart request use the <code>multipart</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">client.post("http://localhost:8080/foo/bar") {
+    multipart {
+        foo = "bar"
+        myFile = new File(..)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can either assign a <code>File</code>, an <code>InputStream</code> or a <code>byte[]</code> for files to be uploaded. Alternatively you can use the <code>file</code> method of <code>HttpRequestBuilder</code> to further customize the file upload.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_testing">Testing</h3>
+<div class="paragraph">
+<p>To facilitate testing and mocking you can use the <a href="groovydoc/grails/http/client/test/TestAsyncHttpBuilder.html">TestAsyncHttpBuilder</a> class.</p>
+</div>
+<div class="paragraph">
+<p>The <code>TestAsyncHttpBuilder</code> provides the ability to mock HTTP responses and avoid external HTTP requests within your unit tests.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">TestAsyncHttpBuilder client = new TestAsyncHttpBuilder()
+client.expect {
+    uri '/foo/bar'
+    method "GET"
+    accept 'application/json'
+}.respond {
+    ok()
+    json {
+        title "Hello"
+    }
+}
+...
+Promise&lt;HttpClientResponse&gt; p = client.get("https://localhost:8080/foo/bar") {
+    accept 'application/json'
+}
+HttpClientResponse response = p.get()
+...
+assert client.verify()
+assert response.status == HttpStatus.OK
+assert response.json.title == "Hello"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The client can be configured with the <a href="groovydoc/grails/http/client/Configuration.html">Configuration</a> trait and the <a href="groovydoc/grails/http/client/cfg/DefaultConfiguration.html">DefaultConfiguration</a> implementation class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Typically for production deployments that use HTTPS you will need to configure the <code>sslTrustManagerFactory</code> using your own certificate.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>proxy</code> property of the <code>Configuration</code> trait allows you to configure an HTTP or SOCKS proxy.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For proxy authentication set the <code>http.proxyUser</code> and <code>http.proxyPassword</code> system properties (or the equivalents for SOCKS)
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage_within_grails">Usage within Grails</h3>
+<div class="paragraph">
+<p>Within Grails 3 you typically want to configure the client as a Spring bean within your <code>Application</code> class' <code>doWithSpring</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+...
+@Override
+Closure doWithSpring() {{-&gt;
+    httpBuilder(AsyncHttpBuilder)
+}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to alter the configuration you can do so with the <code>DefaultConfiguration</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+...
+@Override
+Closure doWithSpring() {{-&gt;
+    def config = new DefaultConfiguration(proxy:..)
+    httpBuilder(AsyncHttpBuilder, config)
+}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then within a controller you can easily obtain a reference and use Grails' asynchronous request processing to perform HTTP calls to an external web service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import grails.http.client.*
+import grails.async.*
+import static grails.async.Promises.*
+...
+@Autowired
+AsyncHttpBuilder client
+...
+def myAction() {
+    Promise&lt;String&gt; promise = client.get("https://localhost:8080/foo/bar") {
+        accept 'application/json'
+    }.then { HttpClientResponse res -&gt;
+        return res.json.title
+    }
+    tasks title: promise
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">

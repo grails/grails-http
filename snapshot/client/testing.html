@@ -427,13 +427,37 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.</p>
+<p>To facilitate testing and mocking you can use the <a href="groovydoc/grails/http/client/test/TestAsyncHttpBuilder.html">TestAsyncHttpBuilder</a> class.</p>
 </div>
 <div class="paragraph">
-<p>From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.</p>
+<p>The <code>TestAsyncHttpBuilder</code> provides the ability to mock HTTP responses and avoid external HTTP requests within your unit tests.</p>
 </div>
 <div class="paragraph">
-<p>Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.</p>
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">TestAsyncHttpBuilder client = new TestAsyncHttpBuilder()
+client.expect {
+    uri '/foo/bar'
+    method "GET"
+    accept 'application/json'
+}.respond {
+    ok()
+    json {
+        title "Hello"
+    }
+}
+...
+Promise&lt;HttpClientResponse&gt; p = client.get("https://localhost:8080/foo/bar") {
+    accept 'application/json'
+}
+HttpClientResponse response = p.get()
+...
+assert client.verify()
+assert response.status == HttpStatus.OK
+assert response.json.title == "Hello"</code></pre>
+</div>
 </div>
 </div>
 <div id="footer">
