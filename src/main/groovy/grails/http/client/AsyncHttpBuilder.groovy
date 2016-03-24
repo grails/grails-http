@@ -42,7 +42,7 @@ class AsyncHttpBuilder {
     AsyncHttpBuilder(Configuration configuration = new DefaultConfiguration()) {
         this.bootstrap = new Bootstrap()
         this.configuration = configuration
-        group = new NioEventLoopGroup(configuration.numOfThreads, configuration.threadFactory)
+        this.group = new NioEventLoopGroup(configuration.numOfThreads, configuration.threadFactory)
         this.bootstrap.group(group)
                  .channel(NioSocketChannel.class)
                  .option(ChannelOption.SO_KEEPALIVE, true)
