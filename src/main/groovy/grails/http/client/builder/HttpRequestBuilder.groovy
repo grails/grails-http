@@ -1,16 +1,13 @@
 package grails.http.client.builder
 
 import grails.http.HttpMethod
-import grails.http.client.Configuration
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import groovy.transform.InheritConstructors
 import io.netty.buffer.Unpooled
-import io.netty.handler.codec.http.DefaultFullHttpRequest
+import io.netty.handler.codec.base64.Base64
 import io.netty.handler.codec.http.FullHttpRequest
 import io.netty.handler.codec.http.HttpHeaderNames
 import io.netty.handler.codec.http.HttpRequest
-import io.netty.handler.codec.http.multipart.HttpPostBodyUtil
 import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder
 import io.netty.handler.codec.http.multipart.MemoryFileUpload
 
@@ -81,7 +78,7 @@ class HttpRequestBuilder extends HttpMessageBuilder<HttpRequestBuilder>{
      */
     HttpRequestBuilder auth(String username, String password) {
         String usernameAndPassword = "$username:$password"
-        String encoded = new String(Base64.getEncoder().encode(usernameAndPassword.bytes))
+        def encoded = Base64.encode(Unpooled.wrappedBuffer(usernameAndPassword.bytes)).toString(charset)
         header HttpHeaderNames.AUTHORIZATION, "Basic $encoded".toString()
         return this
     }

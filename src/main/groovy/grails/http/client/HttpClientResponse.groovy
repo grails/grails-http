@@ -99,6 +99,13 @@ class HttpClientResponse {
     }
 
     /**
+     * @return The reason message
+     */
+    String getStatusReason() {
+        response.status().reasonPhrase()
+    }
+
+    /**
      * @return The returned http status object
      */
     HttpStatus getStatus() {
