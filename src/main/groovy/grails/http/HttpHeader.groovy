@@ -2,7 +2,6 @@ package grails.http
 
 import groovy.transform.CompileStatic
 
-import java.util.stream.IntStream
 
 /**
  * Enum for common HTTP headers
@@ -121,15 +120,6 @@ enum HttpHeader implements CharSequence{
         return text.subSequence(start, end)
     }
 
-    @Override
-    IntStream chars() {
-        return text.chars()
-    }
-
-    @Override
-    IntStream codePoints() {
-        return text.codePoints()
-    }
 
     @Override
     String toString() {
