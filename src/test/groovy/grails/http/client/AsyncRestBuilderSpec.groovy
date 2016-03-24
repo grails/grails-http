@@ -3,13 +3,44 @@ package grails.http.client
 import grails.async.Promise
 import grails.http.HttpMethod
 import grails.http.HttpStatus
+import grails.http.client.cfg.DefaultConfiguration
 import grails.http.client.test.TestAsyncHttpBuilder
+import io.netty.handler.codec.http.HttpClientCodec
 import io.netty.handler.codec.http.HttpResponseStatus
 import spock.lang.Specification
 /**
  * Created by graemerocher on 18/03/16.
  */
 class AsyncRestBuilderSpec extends Specification {
+
+    void "Test form submission"() {
+        given:"A client"
+        AsyncHttpBuilder client = new TestAsyncHttpBuilder()
+
+        client.expect {
+            uri('/foo/bar')
+            method(HttpMethod.POST)
+            contentType('application/x-www-form-urlencoded')
+            form {
+                foo = 'bar'
+            }
+        }.respond {
+            ok()
+        }
+
+        when:"A form is submitted"
+        Promise<HttpClientResponse> p = client.post("http://localhost:8080/foo/bar") {
+            form {
+                foo = "bar"
+            }
+        }
+
+        def response = p.get()
+
+        then:"The form was submitted correct"
+        client.verify()
+        response.status == HttpStatus.OK
+    }
 
     void 'Test simple GET request with JSON response'() {
         given:"an http client instance"

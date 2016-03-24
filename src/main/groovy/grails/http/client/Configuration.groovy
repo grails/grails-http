@@ -2,6 +2,7 @@ package grails.http.client
 
 import groovy.transform.CompileStatic
 import io.netty.handler.codec.http.HttpClientCodec
+import io.netty.handler.codec.http.HttpVersion
 import io.netty.handler.ssl.SslContext
 import io.netty.handler.ssl.SslProvider
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory
@@ -72,5 +73,10 @@ trait Configuration {
      * Alternatively configure a java.net.ProxySelector
      */
     Proxy proxy
+
+    /**
+     * The HTTP version to use
+     */
+    HttpVersion httpVersion = HttpVersion.HTTP_1_1
 
 }

@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.http.FullHttpMessage
 import io.netty.handler.codec.http.HttpHeaderNames
 import io.netty.handler.codec.http.HttpHeaders
+import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder
 
 import java.nio.charset.Charset
 
@@ -160,6 +161,7 @@ abstract class HttpMessageBuilder<T> {
         defaultContentType(httpMessage.headers(), "application/xml")
         return (T)this
     }
+
 
     protected StreamingJsonBuilder prepareJsonBuilder() {
         def headers = httpMessage.headers()

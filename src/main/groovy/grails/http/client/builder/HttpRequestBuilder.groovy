@@ -1,9 +1,12 @@
 package grails.http.client.builder
 
 import grails.http.HttpMethod
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import io.netty.handler.codec.http.DefaultFullHttpRequest
+import io.netty.handler.codec.http.FullHttpRequest
 import io.netty.handler.codec.http.HttpHeaderNames
+import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder
 
 import java.nio.charset.Charset
 /**
@@ -15,7 +18,7 @@ import java.nio.charset.Charset
 @CompileStatic
 class HttpRequestBuilder extends HttpMessageBuilder<HttpRequestBuilder>{
 
-    final DefaultFullHttpRequest request
+    FullHttpRequest request
 
     HttpRequestBuilder(final DefaultFullHttpRequest request, String encoding) {
         this(request, Charset.forName(encoding))
@@ -109,5 +112,48 @@ class HttpRequestBuilder extends HttpMessageBuilder<HttpRequestBuilder>{
     HttpRequestBuilder auth(CharSequence accessToken) {
         header HttpHeaderNames.AUTHORIZATION, accessToken
         return this
+    }
+
+    /**
+     * Builds a form
+     * @param formDefinition The form definition
+     * @return this object
+     */
+    HttpRequestBuilder form(@DelegatesTo(FormDataBuilder) Closure formDefinition) {
+        if(formDefinition != null) {
+
+            HttpPostRequestEncoder encoder = new HttpPostRequestEncoder(request, false)
+            formDefinition.delegate = new FormDataBuilder(encoder)
+            formDefinition.call()
+            request = (FullHttpRequest)encoder.finalizeRequest()
+        }
+        return this
+    }
+
+    static class FormDataBuilder {
+        final HttpPostRequestEncoder encoder
+
+        FormDataBuilder(HttpPostRequestEncoder encoder) {
+            this.encoder = encoder
+        }
+
+        FormDataBuilder attribute(String name, String value) {
+            setProperty(name, value)
+            return this
+        }
+
+        @Override
+        void setProperty(String property, Object newValue) {
+            encoder.addBodyAttribute(property, newValue.toString())
+        }
+
+        @Override
+        @CompileDynamic
+        Object invokeMethod(String name, Object args) {
+            if(args && args.size() == 1) {
+                encoder.addBodyAttribute(name, args[0].toString())
+            }
+            throw new MissingMethodException(name,getClass(), args)
+        }
     }
 }

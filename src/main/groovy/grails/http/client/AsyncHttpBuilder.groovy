@@ -247,17 +247,18 @@ class AsyncHttpBuilder {
 
             if(connectFuture.isSuccess()) {
 
-                def req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, httpMethod, this.uri.rawPath)
+                def req = new DefaultFullHttpRequest(configuration.httpVersion, httpMethod, this.uri.rawPath)
 
                 if(customizer != null) {
                     def reqCustomizer = new HttpRequestBuilder(req, Charset.forName(configuration.encoding))
                     customizer.delegate = reqCustomizer
                     customizer.call()
+                    req = reqCustomizer.request
                 }
 
                 def headers = req.headers()
-                headers.set(HttpHeaders.Names.HOST, this.uri.host)
-                headers.set(HttpHeaders.Names.CONNECTION, "close")
+                headers.set(HttpHeaderNames.HOST, this.uri.host)
+                headers.set(HttpHeaderNames.CONNECTION, "close")
 
                 def responseListener = new ChannelFutureListener() {
                     @Override
@@ -279,7 +280,7 @@ class AsyncHttpBuilder {
             }
         }
 
-        protected ChannelFuture writeHttpRequest(Channel connectionChannel, DefaultFullHttpRequest req) {
+        protected ChannelFuture writeHttpRequest(Channel connectionChannel, FullHttpRequest req) {
             connectionChannel
                     .writeAndFlush(req)
         }
