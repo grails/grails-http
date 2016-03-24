@@ -84,7 +84,21 @@ enum HttpHeader implements CharSequence{
     WEBSOCKET_LOCATION ("WebSocket-Location"),
     WEBSOCKET_ORIGIN ("WebSocket-Origin"),
     WEBSOCKET_PROTOCOL("WebSocket-Protocol"),
-    WWW_AUTHENTICATE("WWW-Authenticate"),
+    WWW_AUTHENTICATE("WWW-Authenticate")
+
+    private static final Map<String, HttpHeader> BY_NAME
+
+    static {
+
+        def headers = values()
+        Map<String, HttpHeader> byCode= [:]
+        for(header in headers) {
+            byCode.put(header.text, header)
+        }
+
+        BY_NAME = Collections.unmodifiableMap(byCode)
+    }
+
 
     final String text
 
@@ -120,5 +134,20 @@ enum HttpHeader implements CharSequence{
     @Override
     String toString() {
         text
+    }
+
+    /**
+     * Obtain a header instance for the given name
+     *
+     * @param name The name
+     * @return The HttpHeader instance
+     */
+    static HttpHeader forName(CharSequence name) {
+        def nameStr = name.toString()
+        def header = BY_NAME.get(nameStr)
+        if(header == null) {
+            return valueOf(nameStr)
+        }
+        return header
     }
 }

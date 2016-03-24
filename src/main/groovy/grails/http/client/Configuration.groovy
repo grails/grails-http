@@ -65,4 +65,12 @@ trait Configuration {
      * Options for the netty channel
      */
     Map<String, Object> channelOptions = [:]
+
+    /**
+     * The proxy to use. For authentication specify http.proxyUser and http.proxyPassword system properties
+     *
+     * Alternatively configure a java.net.ProxySelector
+     */
+    Proxy proxy
+
 }

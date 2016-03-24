@@ -9,6 +9,8 @@ import io.netty.channel.*
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.codec.http.*
+import io.netty.handler.proxy.HttpProxyHandler
+import io.netty.handler.proxy.Socks5ProxyHandler
 import io.netty.handler.ssl.SslContext
 import io.netty.handler.ssl.SslContextBuilder
 import io.netty.handler.ssl.SslHandler
@@ -343,6 +345,35 @@ class AsyncHttpBuilder {
                 p.addFirst("ssl", new SslHandler(engine));
             }
 
+
+            def proxy = configuration.proxy
+            if(proxy != null) {
+                def type = proxy.type().name().toLowerCase()
+                String username = System.getProperty("${type}.proxyUser")
+                String password = System.getProperty("${type}.proxyPassword")
+
+                if(username && password) {
+                    switch(proxy.type()) {
+                        case Proxy.Type.HTTP:
+                            p.addLast(new HttpProxyHandler(proxy.address(), username, password))
+                            break
+                        case Proxy.Type.SOCKS:
+                            p.addLast(new Socks5ProxyHandler(proxy.address(), username, password))
+                            break
+                    }
+                }
+                else {
+                    switch(proxy.type()) {
+                        case Proxy.Type.HTTP:
+                            p.addLast(new HttpProxyHandler(proxy.address()))
+                            break
+                        case Proxy.Type.SOCKS:
+                            p.addLast(new Socks5ProxyHandler(proxy.address()))
+                            break
+                    }
+                }
+
+            }
             if(configuration.codec != null) {
                 p.addLast("codec", configuration.codec )
             }
