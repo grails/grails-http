@@ -1,14 +1,75 @@
-apply plugin:"groovy"
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+        jcenter()
+    }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
+    }
+}
 
-version = "1.0.0-SNAPSHOT"
+
+plugins {
+    id 'org.asciidoctor.convert' version '1.5.3'
+}
+
+apply plugin:"groovy"
+apply plugin:'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.bmuschko.nexus'
+
+
+
+group 'org.grails'
+version "1.0.0-SNAPSHOT"
+
+
+ext {
+    groovyVersion = "2.4.6"
+    repo = 'core'
+    desc = 'Utility classes for working with the HTTP protocol'
+    websiteUrl = 'https://github.com/grails/grails-http'
+    issueTrackerUrl = 'https://github.com/grails/grails-http/issues'
+    vcsUrl = 'https://github.com/grails/grails-http'
+    pomInfo = {
+        delegate.name 'Grails HTTP Utils'
+        delegate.description desc
+        delegate.url 'http://grails.org/'
+
+        delegate.licenses {
+            delegate.license {
+                delegate.name 'The Apache Software License, Version 2.0'
+                delegate.url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                delegate.distribution 'repo'
+            }
+        }
+
+        delegate.scm {
+            delegate.url 'scm:git@github.com:grails/grails-http.git'
+            delegate.connection 'scm:git@github.com:grails/grails-http.git'
+            delegate.developerConnection 'scm:git@github.com:grails/grails-http.git'
+        }
+
+
+        delegate.developers {
+            delegate.developer {
+                delegate.id 'graemerocher'
+                delegate.name 'Graeme Rocher'
+            }
+        }
+
+    }
+}
+
+apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    groovyVersion = "2.4.6"
-}
+
 dependencies {
     compile "io.netty:netty-codec-http:4.1.0.CR4"
     compile "io.netty:netty-handler:4.1.0.CR4"
@@ -24,4 +85,54 @@ dependencies {
     compile "org.codehaus.groovy:groovy:$groovyVersion"
 
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom.withXml {
+                def pomNode = asNode()
+
+                pomNode.children().last() + pomInfo
+            }
+            artifactId project.name
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
+                password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+            }
+
+            if(version.endsWith('-SNAPSHOT')) {
+                url "https://repo.grails.org/grails/libs-snapshots-local"
+            }
+        }
+    }
+}
+
+
+asciidoctor {
+    resources {
+        from('src/docs/images')
+        into "./images"
+    }
+
+    attributes 'experimental'  : 'true',
+                'compat-mode'   : 'true',
+                'toc'           : 'left',
+                'icons'         : 'font',
+                'version'       : project.version,
+                'sourcedir'     : "${project.projectDir}/src/main/groovy"
+}
+
+
+task docs(type:Copy, dependsOn:[groovydoc, asciidoctor])  {
+    from "$buildDir/asciidoc/html5"
+    into "$buildDir/docs"
 }
