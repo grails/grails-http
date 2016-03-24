@@ -1,0 +1,31 @@
+To facilitate testing and mocking you can use the link:groovydoc/grails/http/client/test/TestAsyncHttpBuilder.html[TestAsyncHttpBuilder] class.
+
+The `TestAsyncHttpBuilder` provides the ability to mock HTTP responses and avoid external HTTP requests within your unit tests.
+
+For example:
+
+[source,groovy]
+TestAsyncHttpBuilder client = new TestAsyncHttpBuilder()
+client.expect {
+    uri '/foo/bar'
+    method "GET"
+    accept 'application/json'
+}.respond {
+    ok()
+    json {
+        title "Hello"
+    }
+}
+...
+Promise<HttpClientResponse> p = client.get("https://localhost:8080/foo/bar") {
+    accept 'application/json'
+}
+HttpClientResponse response = p.get()
+...
+assert client.verify()
+assert response.status == HttpStatus.OK
+assert response.json.title == "Hello"
+
+
+
+

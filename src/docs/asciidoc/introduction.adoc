@@ -1,0 +1,5 @@
+The Grails HTTP project provides a set of core utility classes for dealing with the HTTP protocol.
+
+From a user perspective, the current most useful of these is an Asynchronous HTTP client built on Netty that integrates seamlessly with Grails framework.
+
+Note that this client does not require Grails itself, and can easily be used standalone or as an independent HTTP client.

@@ -1,0 +1,13 @@
+= Grails HTTP
+:author: Graeme Rocher
+:email: graeme.rocher@gmail.com
+:source-highlighter: coderay
+:numbered:
+
+== Introduction
+
+include::introduction.adoc[]
+
+== HTTP Client
+
+include::client/index.adoc[]

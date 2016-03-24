@@ -1,0 +1,8 @@
+The client can be configured with the link:groovydoc/grails/http/client/Configuration.html[Configuration] trait and the link:groovydoc/grails/http/client/cfg/DefaultConfiguration.html[DefaultConfiguration] implementation class.
+
+NOTE: Typically for production deployments that use HTTPS you will need to configure the `sslTrustManagerFactory` using your own certificate.
+
+The `proxy` property of the `Configuration` trait allows you to configure an HTTP or SOCKS proxy.
+
+NOTE: For proxy authentication set the `http.proxyUser` and `http.proxyPassword` system properties (or the equivalents for SOCKS)
+

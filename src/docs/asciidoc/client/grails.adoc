@@ -1,0 +1,39 @@
+Within Grails 3 you typically want to configure the client as a Spring bean within your `Application` class' `doWithSpring` method:
+
+[source,groovy]
+import grails.http.client.*
+...
+@Override
+Closure doWithSpring() {{->
+    httpBuilder(AsyncHttpBuilder)
+}}
+
+If you need to alter the configuration you can do so with the `DefaultConfiguration` class:
+
+[source,groovy]
+import grails.http.client.*
+...
+@Override
+Closure doWithSpring() {{->
+    def config = new DefaultConfiguration(proxy:..)
+    httpBuilder(AsyncHttpBuilder, config)
+}}
+
+Then within a controller you can easily obtain a reference and use Grails' asynchronous request processing to perform HTTP calls to an external web service:
+
+[source,groovy]
+import grails.http.client.*
+import grails.async.*
+import static grails.async.Promises.*
+...
+@Autowired
+AsyncHttpBuilder client
+...
+def myAction() {
+    Promise<String> promise = client.get("https://localhost:8080/foo/bar") {
+        accept 'application/json'
+    }.then { HttpClientResponse res ->
+        return res.json.title
+    }
+    tasks title: promise
+}

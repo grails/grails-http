@@ -1,0 +1,27 @@
+=== Introduction
+
+include::introduction.adoc[]
+
+=== Sending & Receiving JSON
+
+include::json.adoc[]
+
+=== Sending & Receiving XML
+
+include::xml.adoc[]
+
+=== Forms and Multipart Requests
+
+include::multipart.adoc[]
+
+=== Testing
+
+include::testing.adoc[]
+
+=== Configuration
+
+include::configuration.adoc[]
+
+=== Usage within Grails
+
+include::grails.adoc[]

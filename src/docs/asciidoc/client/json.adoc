@@ -1,0 +1,25 @@
+To send JSON you can use the `json` method which uses an instance of Groovy's http://docs.groovy-lang.org/latest/html/api/groovy/json/StreamingJsonBuilder.html[StreamingJsonBuilder]:
+
+[source,groovy]
+Promise<HttpClientResponse> p = client.post("https://localhost:8080/foo/bar") {
+    contentType 'application/json'
+    json {
+        title "Hello World"
+    }
+}
+
+The `json` method is defined within the link:groovydoc/grails/http/client/builder/HttpMessageBuilder.html[HttpMessageBuilder] which allows you to build JSON with `StreamingJsonBuilder` in a variety of ways:
+
+
+[source,groovy]
+json [1,2,3] // a JSON array
+json title:"Hello World" // a map
+
+
+To read a JSON response use the `json` property of the link:groovydoc/grails/http/client/HttpClientResponse.html[HttpClientResponse]:
+
+[source,groovy]
+p.onComplete { HttpClientResponse resp ->
+    assert resp.json.title == 'Pong'
+}
+

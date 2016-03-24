@@ -1,0 +1,20 @@
+To send a request of type `application/x-www-form-urlencoded` use the `form` method defined by link:groovydoc/grails/http/client/builder/HttpRequestBuilder.html[HttpRequestBuilder]:
+
+[source,groovy]
+Promise<HttpClientResponse> p = client.post("http://localhost:8080/foo/bar") {
+    form {
+        foo = "bar"
+    }
+}
+
+To upload files using a multipart request use the `multipart` method:
+
+[source,groovy]
+client.post("http://localhost:8080/foo/bar") {
+    multipart {
+        foo = "bar"
+        myFile = new File(..)
+    }
+}
+
+You can either assign a `File`, an `InputStream` or a `byte[]` for files to be uploaded. Alternatively you can use the `file` method of `HttpRequestBuilder` to further customize the file upload.
