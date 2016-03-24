@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Grails HTTP by grails</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Grails HTTP</h1>
+        <p>Grails HTTP Utility Classes</p>
+
+        <p class="view"><a href="https://github.com/grails/grails-http">View the Project on GitHub <small>grails/grails-http</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/grails/grails-http/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/grails/grails-http/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/grails/grails-http">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="grails-http-utilities" class="anchor" href="#grails-http-utilities" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Grails HTTP Utilities</h1>
+
+<p>This project contains HTTP utility classes generally useful across both client and server projects.</p>
+
+<p>Initially there is an Asynchronous HTTP client available that is built on Netty and designed as replacement for the synchronous RestBuilder project for Grails.</p>
+
+<p>The client is however usable outside of Grails and for any general purpose.</p>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
+
+<pre><code>import grails.http.client.*
+import grails.async.*
+
+AsyncHttpBuilder client = new AsyncHttpBuilder()
+Promise&lt;HttpClientResponse&gt; p = client.post("https://localhost:8080/foo/bar") {
+    contentType 'application/json'
+    json {
+        title "Ping"
+    }
+}
+p.onComplete { HttpClientResponse resp -&gt;
+    assert resp.json.title == 'Pong'
+}
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/grails">grails</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

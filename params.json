@@ -1,0 +1,6 @@
+{
+  "name": "Grails HTTP",
+  "tagline": "Grails HTTP Utility Classes",
+  "body": "\r\n# Grails HTTP Utilities\r\n\r\nThis project contains HTTP utility classes generally useful across both client and server projects.\r\n \r\nInitially there is an Asynchronous HTTP client available that is built on Netty and designed as replacement for the synchronous RestBuilder project for Grails.\r\n \r\nThe client is however usable outside of Grails and for any general purpose.\r\n\r\n## Example\r\n\r\n    import grails.http.client.*\r\n    import grails.async.*\r\n    \r\n    AsyncHttpBuilder client = new AsyncHttpBuilder()\r\n    Promise<HttpClientResponse> p = client.post(\"https://localhost:8080/foo/bar\") {\r\n        contentType 'application/json'\r\n        json {\r\n            title \"Ping\"\r\n        }\r\n    }\r\n    p.onComplete { HttpClientResponse resp ->\r\n        assert resp.json.title == 'Pong'\r\n    }\r\n        \r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
