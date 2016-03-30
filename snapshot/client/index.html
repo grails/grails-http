@@ -448,7 +448,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>The entry point for the API is the <a href="groovydoc/grails/http/client/AsyncHttpBuilder.html">AsyncRestBuilder</a> class.</p>
+<p>The entry point for the API is the <a href="api/grails/http/client/AsyncHttpBuilder.html">AsyncRestBuilder</a> class.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -505,7 +505,7 @@ p.onComplete { HttpClientResponse resp -&gt;
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>json</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> which allows you to build JSON with <code>StreamingJsonBuilder</code> in a variety of ways:</p>
+<p>The <code>json</code> method is defined within the <a href="api/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> which allows you to build JSON with <code>StreamingJsonBuilder</code> in a variety of ways:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -514,7 +514,7 @@ json title:"Hello World" // a map</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To read a JSON response use the <code>json</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>:</p>
+<p>To read a JSON response use the <code>json</code> property of the <a href="api/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -541,10 +541,10 @@ json title:"Hello World" // a map</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>xml</code> method is defined within the <a href="groovydoc/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> class.</p>
+<p>The <code>xml</code> method is defined within the <a href="api/grails/http/client/builder/HttpMessageBuilder.html">HttpMessageBuilder</a> class.</p>
 </div>
 <div class="paragraph">
-<p>To read an XML response use the <code>xml</code> property of the <a href="groovydoc/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>, which returns a Groovy <a href="http://docs.groovy-lang.org/latest/html/api/groovy/util/slurpersupport/GPathResult.html">GPathResult</a>:</p>
+<p>To read an XML response use the <code>xml</code> property of the <a href="api/grails/http/client/HttpClientResponse.html">HttpClientResponse</a>, which returns a Groovy <a href="http://docs.groovy-lang.org/latest/html/api/groovy/util/slurpersupport/GPathResult.html">GPathResult</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -557,7 +557,7 @@ json title:"Hello World" // a map</code></pre>
 <div class="sect2">
 <h3 id="_forms_and_multipart_requests">Forms and Multipart Requests</h3>
 <div class="paragraph">
-<p>To send a request of type <code>application/x-www-form-urlencoded</code> use the <code>form</code> method defined by <a href="groovydoc/grails/http/client/builder/HttpRequestBuilder.html">HttpRequestBuilder</a>:</p>
+<p>To send a request of type <code>application/x-www-form-urlencoded</code> use the <code>form</code> method defined by <a href="api/grails/http/client/builder/HttpRequestBuilder.html">HttpRequestBuilder</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -588,7 +588,7 @@ json title:"Hello World" // a map</code></pre>
 <div class="sect2">
 <h3 id="_testing">Testing</h3>
 <div class="paragraph">
-<p>To facilitate testing and mocking you can use the <a href="groovydoc/grails/http/client/test/TestAsyncHttpBuilder.html">TestAsyncHttpBuilder</a> class.</p>
+<p>To facilitate testing and mocking you can use the <a href="api/grails/http/client/test/TestAsyncHttpBuilder.html">TestAsyncHttpBuilder</a> class.</p>
 </div>
 <div class="paragraph">
 <p>The <code>TestAsyncHttpBuilder</code> provides the ability to mock HTTP responses and avoid external HTTP requests within your unit tests.</p>
@@ -624,7 +624,7 @@ assert response.json.title == "Hello"</code></pre>
 <div class="sect2">
 <h3 id="_configuration">Configuration</h3>
 <div class="paragraph">
-<p>The client can be configured with the <a href="groovydoc/grails/http/client/Configuration.html">Configuration</a> trait and the <a href="groovydoc/grails/http/client/cfg/DefaultConfiguration.html">DefaultConfiguration</a> implementation class.</p>
+<p>The client can be configured with the <a href="api/grails/http/client/Configuration.html">Configuration</a> trait and the <a href="api/grails/http/client/cfg/DefaultConfiguration.html">DefaultConfiguration</a> implementation class.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -709,7 +709,7 @@ def myAction() {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-03-24 16:38:04 UTC
+Last updated 2016-03-30 08:45:27 UTC
 </div>
 </div>
 </body>
