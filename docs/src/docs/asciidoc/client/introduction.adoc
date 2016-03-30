@@ -1,13 +1,19 @@
 The HTTP client is built on the http://netty.io[Netty toolkit] and is designed as a non-blocking replacement for the https://grails.org/plugin/rest-client-builder[REST Client Builder plugin ] for Grails.
 
-To get started with the HTTP client you should declare a dependency on the `grails-http` project in your `build.gradle` file:
+To get started with the HTTP client you should declare a dependency on the `grails-http-client` project in your `build.gradle` file:
 
 [source,groovy]
-compile "org.grails:grails-http:VERSION"
+compile "org.grails:http-client:VERSION"
 
 The entry point for the API is the link:api/grails/http/client/AsyncHttpBuilder.html[AsyncRestBuilder] class.
 
 NOTE: Typically there should be a single instance of this class ( a Spring bean for example) that you reuse to avoid the cost of repeatedly creating the thread pools that Netty requires to operate.
+
+If you are using Grails then there is a Grails plugin called `async-http-builder` you can use to get started:
+
+[source,groovy]
+compile "org.grails.plugins:async-http-builder:VERSION"
+
 
 The most simple use case for obtaining content can be seen below:
 
