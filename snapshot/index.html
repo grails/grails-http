@@ -559,11 +559,11 @@ table.CodeRay td.code>pre{padding:0}
 <p>The HTTP client is built on the <a href="http://netty.io">Netty toolkit</a> and is designed as a non-blocking replacement for the <a href="https://grails.org/plugin/rest-client-builder">REST Client Builder plugin </a> for Grails.</p>
 </div>
 <div class="paragraph">
-<p>To get started with the HTTP client you should declare a dependency on the <code>grails-http</code> project in your <code>build.gradle</code> file:</p>
+<p>To get started with the HTTP client you should declare a dependency on the <code>grails-http-client</code> project in your <code>build.gradle</code> file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails:grails-http:VERSION</span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails:http-client:VERSION</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -580,6 +580,14 @@ Typically there should be a single instance of this class ( a Spring bean for ex
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>If you are using Grails then there is a Grails plugin called <code>async-http-builder</code> you can use to get started:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.grails.plugins:async-http-builder:VERSION</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>The most simple use case for obtaining content can be seen below:</p>
@@ -830,7 +838,7 @@ def myAction() {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-03-30 10:27:30 UTC
+Last updated 2016-03-30 10:33:13 UTC
 </div>
 </div>
 </body>
