@@ -1,0 +1,6 @@
+grails.http
+grails.http.client
+grails.http.client.async
+grails.http.client.builder
+grails.http.client.cfg
+grails.http.client.test
