@@ -69,7 +69,7 @@ subprojects { project ->
         }
 
         grailsPublish {
-            userOrg = userOrg
+            userOrg = "grails"
             githubSlug = 'grails/grails-http'
             license {
                 name = 'Apache-2.0'
