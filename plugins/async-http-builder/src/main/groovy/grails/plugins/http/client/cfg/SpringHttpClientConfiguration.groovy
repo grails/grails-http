@@ -10,5 +10,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  * @since 1.0
  */
 @ConfigurationProperties('grails.http.client')
-class SpringConfiguration extends DefaultConfiguration {
+class SpringHttpClientConfiguration extends DefaultConfiguration {
 }

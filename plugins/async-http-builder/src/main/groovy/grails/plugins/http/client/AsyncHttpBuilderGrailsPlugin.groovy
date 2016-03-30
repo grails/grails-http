@@ -1,9 +1,8 @@
 package grails.plugins.http.client
 
 import grails.http.client.AsyncHttpBuilder
-import grails.http.client.cfg.DefaultConfiguration
 import grails.plugins.*
-import grails.plugins.http.client.cfg.SpringConfiguration
+import grails.plugins.http.client.cfg.SpringHttpClientConfiguration
 
 class AsyncHttpBuilderGrailsPlugin extends Plugin {
 
@@ -37,7 +36,7 @@ A non-blocking HTTP client for Grails based on Netty
     def scm = [ url: "https://github.com/grails/grails-http" ]
 
     Closure doWithSpring() { {->
-        asyncHttpBuilderConfiguration(SpringConfiguration)
+        asyncHttpBuilderConfiguration(SpringHttpClientConfiguration)
         asyncHttpBuilder(AsyncHttpBuilder, ref('asyncHttpBuilderConfiguration'))
     } }
 }
