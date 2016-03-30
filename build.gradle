@@ -82,7 +82,7 @@ subprojects { project ->
     else {
 
         ext {
-            repo = 'core'
+            repo = 'grails-core'
         }
 
         group 'org.grails'
