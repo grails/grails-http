@@ -52,13 +52,14 @@ ext {
 }
 
 subprojects { project ->
-    group "org.grails.plugins"
+
     version "1.0.0-SNAPSHOT"
 
 
     def parentDir = project.projectDir.parentFile.name
     boolean isPlugin = parentDir.equals('plugins')
     if(isPlugin) {
+        group "org.grails.plugins"
 
         apply plugin:"org.grails.grails-plugin"
         apply plugin:"org.grails.grails-plugin-publish"
