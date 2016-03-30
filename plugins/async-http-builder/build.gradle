@@ -1,0 +1,39 @@
+group "org.grails.plugins"
+
+apply plugin:"eclipse"
+apply plugin:"idea"
+apply plugin:"org.grails.grails-plugin"
+apply plugin:"org.grails.grails-plugin-publish"
+apply plugin:"org.grails.grails-gsp"
+
+ext {
+    grailsVersion = project.grailsVersion
+}
+
+repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
+}
+
+dependencies {
+    compile "org.grails:grails-core"
+
+    compile project(':http-client')
+}
+
+grailsPublish {
+    githubSlug = 'grails/grails-http'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "Grails Async HTTP Client"
+    desc = "A non-blocking HTTP client for Grails based on Netty"
+    developers = [graemerocher:"Graeme Rocher"]
+}

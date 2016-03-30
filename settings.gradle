@@ -1,2 +1,9 @@
-include 'core', "client", 'docs'
-rootProject.children.each { it.name = "http-${it.name}" }
+include 'core', "client", 'docs', 'plugins/async-http-builder'
+rootProject.children.each {
+    if(!it.name.startsWith('plugins/')) {
+        it.name = "http-${it.name}"
+    }
+    else {
+        it.name = it.name.substring(8)
+    }
+}

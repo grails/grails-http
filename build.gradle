@@ -8,6 +8,7 @@ buildscript {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     }
 }
 
@@ -54,14 +55,19 @@ subprojects { project ->
     group 'org.grails'
     version "1.0.0-SNAPSHOT"
 
-    repositories {
-        mavenCentral()
-    }
+
+    def parentDir = project.projectDir.parentFile.name
+    boolean isPlugin = parentDir.equals('plugins')
+    if(isPlugin) return
 
     apply plugin:"groovy"
     apply plugin:'maven-publish'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.bmuschko.nexus'
+
+    repositories {
+        mavenCentral()
+    }
 
     apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
