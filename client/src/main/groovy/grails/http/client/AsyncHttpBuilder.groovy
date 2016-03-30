@@ -5,6 +5,7 @@ import grails.http.client.builder.HttpRequestBuilder
 import grails.http.client.cfg.DefaultConfiguration
 import groovy.transform.CompileStatic
 import io.netty.bootstrap.Bootstrap
+import io.netty.buffer.ByteBuf
 import io.netty.channel.*
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioSocketChannel
@@ -266,8 +267,13 @@ class AsyncHttpBuilder {
                         def requestChannel = reqFuture
                                                 .channel()
 
-                        HttpResponseHandler handler = (HttpResponseHandler)requestChannel.pipeline().get(HttpResponseHandler)
-                        handler.promise = finalPromise
+                        if(reqFuture.isSuccess()) {
+                            HttpResponseHandler handler = (HttpResponseHandler)requestChannel.pipeline().get(HttpResponseHandler)
+                            handler.promise = finalPromise
+                        }
+                        else {
+                            finalPromise.setFailure(reqFuture.cause())
+                        }
                     }
                 }
 
@@ -290,12 +296,13 @@ class AsyncHttpBuilder {
     static class HttpResponseHandler extends SimpleChannelInboundHandler<HttpObject> {
 
         final Configuration configuration
+        Promise promise
 
         HttpResponseHandler(Configuration configuration) {
             this.configuration = configuration
         }
 
-        Promise promise
+
 
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
@@ -304,6 +311,10 @@ class AsyncHttpBuilder {
                     throw new IllegalStateException("Promise not configured")
                 }
                 FullHttpResponse resp = (FullHttpResponse)msg
+                def body = resp.content()
+                if(body.isReadable()) {
+                    body.retain()
+                }
                 promise.setSuccess(new HttpClientResponse(resp, configuration.encoding))
             }
         }

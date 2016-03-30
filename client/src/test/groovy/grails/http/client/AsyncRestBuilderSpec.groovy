@@ -13,6 +13,21 @@ import spock.lang.Specification
  */
 class AsyncRestBuilderSpec extends Specification {
 
+    void "Test actual GET request"() {
+        given:"An HTTP client"
+        AsyncHttpBuilder client = new AsyncHttpBuilder()
+
+        when:"A GET request is issued"
+        def promise = client.get("http://grails.org/api/v1.0/plugin/feeds")
+        def response = promise.get()
+
+        then:"The result is correct"
+        response.status == HttpStatus.OK
+        response.text != ''
+        response.json.title == 'Render RSS/Atom feeds with a simple builder'
+
+    }
+
     void "Test multipart form submission"() {
         given:"A client"
         AsyncHttpBuilder client = new TestAsyncHttpBuilder()
