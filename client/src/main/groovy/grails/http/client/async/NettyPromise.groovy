@@ -1,6 +1,7 @@
 package grails.http.client.async
 
 import grails.async.Promise
+import grails.async.Promises
 import groovy.transform.CompileStatic
 import io.netty.util.concurrent.Future
 import io.netty.util.concurrent.GenericFutureListener
@@ -57,6 +58,7 @@ class NettyPromise<T> implements Promise<T>, java.util.concurrent.Future<T> {
 
     @Override
     Promise<T> onComplete(Closure callable) {
+        callable = Promises.promiseFactory.applyDecorators(callable, null)
         nettyPromise.addListener(new GenericFutureListener() {
             void operationComplete(Future future) throws Exception {
                 if(future.isSuccess()) {
@@ -69,6 +71,7 @@ class NettyPromise<T> implements Promise<T>, java.util.concurrent.Future<T> {
 
     @Override
     Promise<T> onError(Closure callable) {
+        callable = Promises.promiseFactory.applyDecorators(callable, null)
         nettyPromise.addListener(new GenericFutureListener<Future<? super T>>() {
             @Override
             void operationComplete(Future<? super T> future) throws Exception {
