@@ -52,62 +52,91 @@ ext {
 }
 
 subprojects { project ->
-    group 'org.grails'
+    group "org.grails.plugins"
     version "1.0.0-SNAPSHOT"
 
 
     def parentDir = project.projectDir.parentFile.name
     boolean isPlugin = parentDir.equals('plugins')
-    if(isPlugin) return
+    if(isPlugin) {
 
-    apply plugin:"groovy"
-    apply plugin:'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
-    apply plugin: 'com.bmuschko.nexus'
+        apply plugin:"org.grails.grails-plugin"
+        apply plugin:"org.grails.grails-plugin-publish"
+        apply plugin:"org.grails.grails-gsp"
 
-    repositories {
-        mavenCentral()
+        dependencyManagement {
+            imports {
+                mavenBom "org.grails:grails-bom:$grailsVersion"
+            }
+            applyMavenExclusions false
+        }
+
+        grailsPublish {
+            githubSlug = 'grails/grails-http'
+            license {
+                name = 'Apache-2.0'
+            }
+            title = "Grails Async HTTP Client"
+            desc = "A non-blocking HTTP client for Grails based on Netty"
+            developers = [graemerocher:"Graeme Rocher"]
+        }
+
     }
+    else {
+        group 'org.grails'
 
-    apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+        apply plugin:"groovy"
+        apply plugin:'maven-publish'
+        apply plugin: 'com.jfrog.bintray'
+        apply plugin: 'com.bmuschko.nexus'
+        apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 
 
-    if(project.name != 'http-docs') {
+        if(project.name != 'http-docs') {
 
-        publishing {
-            publications {
-                maven(MavenPublication) {
-                    pom.withXml {
-                        def pomNode = asNode()
+            publishing {
+                publications {
+                    maven(MavenPublication) {
+                        pom.withXml {
+                            def pomNode = asNode()
 
-                        pomNode.children().last() + pomInfo
-                    }
-                    artifactId project.name
-                    from components.java
-                    artifact sourcesJar
-                    artifact javadocJar
-                }
-            }
-
-            repositories {
-                maven {
-                    credentials {
-                        username System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
-                        password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
-                    }
-
-                    if(version.endsWith('-SNAPSHOT')) {
-                        url "https://repo.grails.org/grails/libs-snapshots-local"
+                            pomNode.children().last() + pomInfo
+                        }
+                        artifactId project.name
+                        from components.java
+                        artifact sourcesJar
+                        artifact javadocJar
                     }
                 }
-            }
 
-            dependencies {
-                compile "org.codehaus.groovy:groovy:$groovyVersion"
+                repositories {
+                    maven {
+                        credentials {
+                            username System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
+                            password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+                        }
+
+                        if(version.endsWith('-SNAPSHOT')) {
+                            url "https://repo.grails.org/grails/libs-snapshots-local"
+                        }
+                    }
+                }
+
+                dependencies {
+                    compile "org.codehaus.groovy:groovy:$groovyVersion"
+                }
             }
         }
     }
+
+
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+
+
 
 
 
