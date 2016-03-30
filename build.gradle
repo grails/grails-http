@@ -11,8 +11,6 @@ buildscript {
     }
 }
 
-group 'org.grails'
-version "1.0.0-SNAPSHOT"
 
 
 ext {
@@ -53,6 +51,9 @@ ext {
 }
 
 subprojects { project ->
+    group 'org.grails'
+    version "1.0.0-SNAPSHOT"
+
     repositories {
         mavenCentral()
     }
