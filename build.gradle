@@ -7,12 +7,9 @@ buildscript {
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     }
 }
-
-
 
 ext {
     groovyVersion = "2.4.6"
@@ -40,7 +37,6 @@ ext {
             delegate.developerConnection 'scm:git@github.com:grails/grails-http.git'
         }
 
-
         delegate.developers {
             delegate.developer {
                 delegate.id 'graemerocher'
@@ -55,9 +51,9 @@ subprojects { project ->
 
     version "1.0.0-SNAPSHOT"
 
-
     def parentDir = project.projectDir.parentFile.name
     boolean isPlugin = parentDir.equals('plugins')
+
     if(isPlugin) {
         group "org.grails.plugins"
 
@@ -81,7 +77,6 @@ subprojects { project ->
             desc = "A non-blocking HTTP client for Grails based on Netty"
             developers = [graemerocher:"Graeme Rocher"]
         }
-
     }
     else {
         group 'org.grails'
@@ -91,8 +86,6 @@ subprojects { project ->
         apply plugin: 'com.jfrog.bintray'
         apply plugin: 'com.bmuschko.nexus'
         apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
-
-
 
         if(project.name != 'http-docs') {
 
@@ -110,7 +103,6 @@ subprojects { project ->
                         artifact javadocJar
                     }
                 }
-
                 repositories {
                     maven {
                         credentials {
@@ -131,14 +123,8 @@ subprojects { project ->
         }
     }
 
-
     repositories {
         mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
-
-
-
-
-
 }
