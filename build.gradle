@@ -49,7 +49,7 @@ ext {
 
 subprojects { project ->
 
-    version "1.0.0-SNAPSHOT"
+    version "1.0.0.M1"
 
     def parentDir = project.projectDir.parentFile.name
     boolean isPlugin = parentDir.equals('plugins')
