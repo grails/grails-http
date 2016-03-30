@@ -4,3 +4,11 @@ dependencies {
     compile project(':http-client')
 }
 
+
+bintray {
+    pkg {
+        name = 'async-http-builder'
+    }
+}
+
+
