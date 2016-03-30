@@ -13,7 +13,7 @@ buildscript {
 
 ext {
     groovyVersion = "2.4.6"
-    repo = 'core'
+    userOrg = 'grails'
     desc = 'Utility classes for working with the HTTP protocol'
     websiteUrl = 'https://github.com/grails/grails-http'
     issueTrackerUrl = 'https://github.com/grails/grails-http/issues'
@@ -79,6 +79,11 @@ subprojects { project ->
         }
     }
     else {
+
+        ext {
+            repo = 'core'
+        }
+
         group 'org.grails'
 
         apply plugin:"groovy"
