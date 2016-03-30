@@ -55,7 +55,7 @@ class TestAsyncHttpBuilder extends AsyncHttpBuilder {
     final LinkedList<HttpRequest> expectedRequests = []
     final LinkedList<HttpResponse> expectedResponses = []
 
-    TestAsyncHttpBuilder(Configuration configuration = new DefaultConfiguration(codec: (HttpClientCodec)null)) {
+    TestAsyncHttpBuilder(Configuration configuration = new DefaultConfiguration(codecClass: (Class)null)) {
         super(configuration)
         mockChannel = new EmbeddedChannel(new AsyncHttpClientInitializer(configuration), new HttpResponseHandler(configuration))
     }

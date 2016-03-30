@@ -1,6 +1,7 @@
 package grails.http.client
 
 import groovy.transform.CompileStatic
+import io.netty.channel.ChannelHandler
 import io.netty.handler.codec.http.HttpClientCodec
 import io.netty.handler.codec.http.HttpVersion
 import io.netty.handler.ssl.SslContext
@@ -60,7 +61,7 @@ trait Configuration {
     /**
      * The codec to use
      */
-    HttpClientCodec codec = new HttpClientCodec()
+    Class<ChannelHandler> codecClass = HttpClientCodec
 
     /**
      * Options for the netty channel

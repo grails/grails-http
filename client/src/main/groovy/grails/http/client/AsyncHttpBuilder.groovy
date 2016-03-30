@@ -386,8 +386,8 @@ class AsyncHttpBuilder {
                 }
 
             }
-            if(configuration.codec != null) {
-                p.addLast("codec", configuration.codec )
+            if(configuration.codecClass != null) {
+                p.addLast("codec", configuration.codecClass.newInstance())
             }
             p.addLast("aggregator", new HttpObjectAggregator(configuration.maxContentLength))
             p.addLast("response", new HttpResponseHandler(configuration))

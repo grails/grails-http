@@ -26,6 +26,14 @@ class AsyncRestBuilderSpec extends Specification {
         response.text != ''
         response.json.title == 'Render RSS/Atom feeds with a simple builder'
 
+        when:"A second GET request is issued"
+        promise = client.get("http://grails.org/api/v1.0/plugin/mail")
+        response = promise.get()
+
+        then:"The result is correct"
+        response.status == HttpStatus.OK
+        response.text != ''
+        response.json.title == 'Provides Mail support to a running Grails application'
     }
 
     void "Test multipart form submission"() {
