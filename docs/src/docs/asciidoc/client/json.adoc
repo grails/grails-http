@@ -8,7 +8,7 @@ Promise<HttpClientResponse> p = client.post("https://localhost:8080/foo/bar") {
     }
 }
 
-The `json` method is defined within the link:groovydoc/grails/http/client/builder/HttpMessageBuilder.html[HttpMessageBuilder] which allows you to build JSON with `StreamingJsonBuilder` in a variety of ways:
+The `json` method is defined within the link:api/grails/http/client/builder/HttpMessageBuilder.html[HttpMessageBuilder] which allows you to build JSON with `StreamingJsonBuilder` in a variety of ways:
 
 
 [source,groovy]
@@ -16,7 +16,7 @@ json [1,2,3] // a JSON array
 json title:"Hello World" // a map
 
 
-To read a JSON response use the `json` property of the link:groovydoc/grails/http/client/HttpClientResponse.html[HttpClientResponse]:
+To read a JSON response use the `json` property of the link:api/grails/http/client/HttpClientResponse.html[HttpClientResponse]:
 
 [source,groovy]
 p.onComplete { HttpClientResponse resp ->

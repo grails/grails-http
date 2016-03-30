@@ -1,0 +1,17 @@
+dependencies {
+    compile "io.netty:netty-codec-http:4.1.0.CR4"
+    compile "io.netty:netty-handler:4.1.0.CR4"
+    compile "io.netty:netty-handler-proxy:4.1.0.CR4"
+    compile "org.grails:grails-async:3.1.4", {
+        exclude group:"org.codehaus.gpars", module:"gpars"
+        exclude group:"io.projectreactor", module:"reactor-core"
+        exclude group:"io.projectreactor", module:"reactor-stream"
+        exclude group:"org.slf4j", module:"jcl-over-slf4j"
+    }
+    compile "org.codehaus.groovy:groovy-json:$groovyVersion"
+    compile "org.codehaus.groovy:groovy-xml:$groovyVersion"
+
+    compile project(":http-core")
+
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+}

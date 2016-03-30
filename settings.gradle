@@ -1,0 +1,2 @@
+include 'core', "client", 'docs'
+rootProject.children.each { it.name = "http-${it.name}" }

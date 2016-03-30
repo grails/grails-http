@@ -9,9 +9,9 @@ Promise<HttpClientResponse> p = client.post("https://localhost:8080/foo/bar") {
     }
 }
 
-The `xml` method is defined within the link:groovydoc/grails/http/client/builder/HttpMessageBuilder.html[HttpMessageBuilder] class.
+The `xml` method is defined within the link:api/grails/http/client/builder/HttpMessageBuilder.html[HttpMessageBuilder] class.
 
-To read an XML response use the `xml` property of the link:groovydoc/grails/http/client/HttpClientResponse.html[HttpClientResponse], which returns a Groovy link:http://docs.groovy-lang.org/latest/html/api/groovy/util/slurpersupport/GPathResult.html[GPathResult]:
+To read an XML response use the `xml` property of the link:api/grails/http/client/HttpClientResponse.html[HttpClientResponse], which returns a Groovy link:http://docs.groovy-lang.org/latest/html/api/groovy/util/slurpersupport/GPathResult.html[GPathResult]:
 
 [source,groovy]
 p.onComplete { HttpClientResponse resp ->

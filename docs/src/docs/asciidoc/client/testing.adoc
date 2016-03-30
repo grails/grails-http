@@ -1,4 +1,4 @@
-To facilitate testing and mocking you can use the link:groovydoc/grails/http/client/test/TestAsyncHttpBuilder.html[TestAsyncHttpBuilder] class.
+To facilitate testing and mocking you can use the link:api/grails/http/client/test/TestAsyncHttpBuilder.html[TestAsyncHttpBuilder] class.
 
 The `TestAsyncHttpBuilder` provides the ability to mock HTTP responses and avoid external HTTP requests within your unit tests.
 

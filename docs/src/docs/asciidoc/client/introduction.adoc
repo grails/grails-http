@@ -5,7 +5,7 @@ To get started with the HTTP client you should declare a dependency on the `grai
 [source,groovy]
 compile "org.grails:grails-http:VERSION"
 
-The entry point for the API is the link:groovydoc/grails/http/client/AsyncHttpBuilder.html[AsyncRestBuilder] class.
+The entry point for the API is the link:api/grails/http/client/AsyncHttpBuilder.html[AsyncRestBuilder] class.
 
 NOTE: Typically there should be a single instance of this class ( a Spring bean for example) that you reuse to avoid the cost of repeatedly creating the thread pools that Netty requires to operate.
 

@@ -1,4 +1,4 @@
-The client can be configured with the link:groovydoc/grails/http/client/Configuration.html[Configuration] trait and the link:groovydoc/grails/http/client/cfg/DefaultConfiguration.html[DefaultConfiguration] implementation class.
+The client can be configured with the link:api/grails/http/client/Configuration.html[Configuration] trait and the link:api/grails/http/client/cfg/DefaultConfiguration.html[DefaultConfiguration] implementation class.
 
 NOTE: Typically for production deployments that use HTTPS you will need to configure the `sslTrustManagerFactory` using your own certificate.
 

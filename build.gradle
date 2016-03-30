@@ -7,20 +7,9 @@ buildscript {
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6"
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
     }
 }
-
-
-plugins {
-    id 'org.asciidoctor.convert' version '1.5.3'
-}
-
-apply plugin:"groovy"
-apply plugin:'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.bmuschko.nexus'
-
-
 
 group 'org.grails'
 version "1.0.0-SNAPSHOT"
@@ -63,76 +52,56 @@ ext {
     }
 }
 
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
-
-repositories {
-    mavenCentral()
-}
-
-
-dependencies {
-    compile "io.netty:netty-codec-http:4.1.0.CR4"
-    compile "io.netty:netty-handler:4.1.0.CR4"
-    compile "io.netty:netty-handler-proxy:4.1.0.CR4"
-    compile "org.grails:grails-async:3.1.4", {
-        exclude group:"org.codehaus.gpars", module:"gpars"
-        exclude group:"io.projectreactor", module:"reactor-core"
-        exclude group:"io.projectreactor", module:"reactor-stream"
-        exclude group:"org.slf4j", module:"jcl-over-slf4j"
-    }
-    compile "org.codehaus.groovy:groovy-json:$groovyVersion"
-    compile "org.codehaus.groovy:groovy-xml:$groovyVersion"
-    compile "org.codehaus.groovy:groovy:$groovyVersion"
-
-    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            pom.withXml {
-                def pomNode = asNode()
-
-                pomNode.children().last() + pomInfo
-            }
-            artifactId project.name
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
-
+subprojects { project ->
     repositories {
-        maven {
-            credentials {
-                username System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
-                password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+        mavenCentral()
+    }
+
+    apply plugin:"groovy"
+    apply plugin:'maven-publish'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'com.bmuschko.nexus'
+
+    apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+
+
+
+    if(project.name != 'http-docs') {
+
+        publishing {
+            publications {
+                maven(MavenPublication) {
+                    pom.withXml {
+                        def pomNode = asNode()
+
+                        pomNode.children().last() + pomInfo
+                    }
+                    artifactId project.name
+                    from components.java
+                    artifact sourcesJar
+                    artifact javadocJar
+                }
             }
 
-            if(version.endsWith('-SNAPSHOT')) {
-                url "https://repo.grails.org/grails/libs-snapshots-local"
+            repositories {
+                maven {
+                    credentials {
+                        username System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
+                        password System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+                    }
+
+                    if(version.endsWith('-SNAPSHOT')) {
+                        url "https://repo.grails.org/grails/libs-snapshots-local"
+                    }
+                }
+            }
+
+            dependencies {
+                compile "org.codehaus.groovy:groovy:$groovyVersion"
             }
         }
     }
-}
 
 
-asciidoctor {
-    resources {
-        from('src/docs/images')
-        into "./images"
-    }
 
-    attributes 'experimental'  : 'true',
-                'compat-mode'   : 'true',
-                'toc'           : 'left',
-                'icons'         : 'font',
-                'version'       : project.version,
-                'sourcedir'     : "${project.projectDir}/src/main/groovy"
-}
-
-
-task docs(type:Copy, dependsOn:[groovydoc, asciidoctor])  {
-    from "$buildDir/asciidoc/html5"
-    into "$buildDir/docs"
 }
