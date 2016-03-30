@@ -87,13 +87,13 @@ subprojects { project ->
 
         group 'org.grails'
 
-        apply plugin:"groovy"
-        apply plugin:'maven-publish'
-        apply plugin: 'com.jfrog.bintray'
-        apply plugin: 'com.bmuschko.nexus'
-        apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
         if(project.name != 'http-docs') {
+            apply plugin:"groovy"
+            apply plugin:'maven-publish'
+            apply plugin: 'com.jfrog.bintray'
+            apply plugin: 'com.bmuschko.nexus'
+            apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
             publishing {
                 publications {
